@@ -11,8 +11,6 @@ export const MultipleCustomHokks = () => {
 
   const {author, quote} = !!data && data[0];
 
-  console.log(author, quote);
-
   return (
     <div>
       <h1>Breaking Bad Quotes</h1>
