@@ -1,8 +1,10 @@
 import React, { useEffect, useReducer } from 'react';
 import { todoReducer } from './todoReducer';
 
+import { TodoList } from './TodoList';
+import { TodoAdd } from './TodoAdd';
+
 import './styles.css';
-import { useForm } from '../../hooks/useForm';
 
 const init = () => {
 
@@ -12,10 +14,6 @@ const init = () => {
 
 export const TodoApp = () => {
   const [todos, dispatch] = useReducer(todoReducer, [], init);
-
-  const [ { description }, handleInputChage, reset ] = useForm({
-    description: '',
-  });
 
   useEffect(()=>{
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -29,20 +27,19 @@ export const TodoApp = () => {
     dispatch(action);
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newTodo = {
-      id: new Date().getTime(),
-      desc: description,
-      done: false,
-    };
-    const action = {
+  const handleToggle = (todoId) => {
+    dispatch({
+      type: 'toggle',
+      payload: todoId
+    });
+  }
+
+  const handleAddTodo = (newTodo) => {
+    dispatch({
       type: 'add',
-      payload: newTodo,
-    };
-    dispatch(action);
-    reset();
-  };
+      payload: newTodo
+    })
+  }
 
   return (
     <div>
@@ -50,29 +47,10 @@ export const TodoApp = () => {
       <hr />
       <div className="row">
         <div className="col-7">
-          <ul className="list-group list-group-flush">
-            {todos.map((todo, i) => (
-              <li key={todo.id} className="list-group-item">
-                <p className="text-center">
-                  {i + 1}. {todo.desc}{' '}
-                </p>
-                <button className="btn btn-danger" onClick={()=> handleDelete(todo.id)} >Borrar</button>
-              </li>
-            ))}
-          </ul>
+          <TodoList todos={todos} handleDelete={handleDelete} handleToggle={handleToggle} />
         </div>
         <div className="col-5">
-          <h4>Agregar</h4>
-          <hr />
-
-          <form onSubmit={handleSubmit}>
-            <input value={description} onChange={handleInputChage} className="form-control" type="text" name="description" placeholder="Aprender..." autoComplete="off" />
-            <div className="d-grid gap-2">
-              <button type="submit" className="btn btn-outline-primary mt-4">
-                Agregar
-              </button>
-            </div>
-          </form>
+          <TodoAdd handleAddTodo={handleAddTodo} />
         </div>
       </div>
     </div>
