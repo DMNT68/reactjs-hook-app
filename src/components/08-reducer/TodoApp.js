@@ -7,8 +7,13 @@ import { TodoAdd } from './TodoAdd';
 import './styles.css';
 
 const init = () => {
+  
+  let lc = null;
+  if (typeof window !== 'undefined') {
+      lc = localStorage.getItem('todos');
+  }
 
-  return JSON.parse(localStorage.getItem('todos')) || [];
+  return JSON.parse(lc) || [];
 
 }
 
